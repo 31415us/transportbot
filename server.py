@@ -18,6 +18,11 @@ TRANSPORT_API_ROOT = 'http://transport.opendata.ch/v1/'
 app = Flask(__name__)
 
 
+@app.route('/', methods=['GET'])
+def greeting():
+    return "welcome to the transport bot", 200
+
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
 
