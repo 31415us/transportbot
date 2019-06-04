@@ -1,0 +1,14 @@
+[Unit]
+Description = Gunicorn service for transport bot
+After = network.target
+
+[Service]
+User = ubuntu
+Group = ubuntu
+WorkingDirectory = /home/ubuntu/transportbot/
+ExecStart = /home/ubuntu/transportbot/venv/bin/gunicorn -b 0.0.0.0:1818 -w 8 server:app
+ExecReload = /bin/kill -s HUP $MAINPID
+ExecStop = /bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy = multi-user.target
