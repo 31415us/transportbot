@@ -92,18 +92,49 @@ def connection(request_data):
     r = requests.get(TRANSPORT_API_ROOT + 'connections', params=query_params)
     response_data = json.loads(r.content.decode('utf-8'))
 
-    answers = []
+    answer = f"Ok. The next {len(response_data['connections'])} connections"\
+        f" from {response_data['from']['name']}"\
+        f" to {response_data['to']['name']} are:"
+
+    answers = [answer]
     for conn in response_data['connections']:
-        source = conn['from']['station']['name']
-        dest = conn['to']['station']['name']
-        departure_time = conn['from']['departure']
+        departure_time = dateparser.parse(conn['from']['departure'])
         platform = conn['from']['platform']
-        answer = f'connection from {source} to {dest} leaves at {departure_time} on platform {platform}'
+        duration = conn['duration']
+        answer = f"At {departure_time.strftime(TIME_FORMAT)}"\
+            f" on platform {platform} taking {generate_duration(duration)}."
         answers.append(answer)
 
     response_text = '\t'.join(answers)
 
     return response_text
+
+
+def generate_duration(duration):
+    days, rest = duration.split('d')
+    days = int(days)
+    hours, minutes, seconds = tuple(map(int, rest.split(':')))
+
+    parts = []
+    if days > 0:
+        if days == 1:
+            parts.append('1 day')
+        else:
+            parts.append(f'{days} days')
+
+    if hours > 0:
+        if hours == 1:
+            parts.append('1 hour')
+        else:
+            parts.append(f'{hours} hours')
+
+    if minutes > 0:
+        if minutes == 1:
+            parts.append(('and ' if len(parts) > 0 else '') + '1 minute')
+        else:
+            parts.append(('and ' if len(parts) > 0 else '') + f'{minutes} minutes')
+
+    return ' '.join(parts)
 
 
 def parse_dialogflow_time(dialogflow_date, dialogflow_time):
