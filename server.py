@@ -60,13 +60,16 @@ def stationboard(request_data):
     r = requests.get(TRANSPORT_API_ROOT + 'stationboard', params=query_params)
     response_data = json.loads(r.content.decode('utf-8'))
 
-    answers = []
+    print(response_data)
+
+    answers = [f"Ok. The next {len(response_data['stationboard'])} trains"
+               f" leaving {response_data['station']['name']} are:"]
     for entry in response_data['stationboard']:
         name = entry['stop']['station']['name']
-        departure = entry['stop']['departure']
+        departure = dateparser.parse(entry['stop']['departure'])
         train_name = entry['name']
         destination = entry['to']
-        answer = f'{train_name} to {destination} leaves {name} at {departure}'
+        answer = f'{train_name} to {destination} at {departure.strftime(TIME_FORMAT)}.'
         answers.append(answer)
 
     response_text = '\t'.join(answers)
