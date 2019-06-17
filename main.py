@@ -151,4 +151,4 @@ def parse_dialogflow_time(dialogflow_date, dialogflow_time):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=1818, debug=True)
+    app.run(debug=True)
