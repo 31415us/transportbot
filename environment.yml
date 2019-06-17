@@ -1,0 +1,9 @@
+name: transportbot
+channels:
+    - defaults
+    - conda-forge
+dependencies:
+    - python=3.7
+    - Flask=1.0.3
+    - requests=2.22.0
+    - dateparser=0.7.1
