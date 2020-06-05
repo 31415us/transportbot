@@ -29,7 +29,7 @@ def webhook():
     data = request.get_json(force=True, silent=True)
 
     if data is None:
-        return 'expect json', 400
+        return 'webhook expects json, if you see this it might be a problem with dialogflow', 400
 
     intent_name = data['queryResult']['intent']['displayName']
     try:
