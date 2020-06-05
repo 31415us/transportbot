@@ -32,12 +32,18 @@ def webhook():
         return 'expect json', 400
 
     intent_name = data['queryResult']['intent']['displayName']
-    if intent_name == 'stationboard':
-        response_text = stationboard(data)
-    elif intent_name == 'connection':
-        response_text = connection(data)
-    else:
-        response_text = 'Sorry I did not understand.'
+    try:
+        if intent_name == 'stationboard':
+            response_text = stationboard(data)
+        elif intent_name == 'connection':
+            response_text = connection(data)
+        else:
+            response_text = f"unknown intent '{intent_name}'," \
+                            f" expected one of {{'stationboard', 'connection'}}"
+    except KeyError as e:
+        response_text = f"check your parameter names. found unknown: {e.args[0]}"
+    except Exception:
+        response_text = f"your request looks malformed, check your parameters"
 
     response = {
         'fulfillmentText': response_text,
